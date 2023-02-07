@@ -3,6 +3,8 @@ package com.limeira.dscatalog.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.limeira.dscatalog.dto.CategoryDTO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,6 +29,11 @@ public class Category implements Serializable {
 	public Category(Long id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+	
+	public Category(CategoryDTO dto) {
+		id = dto.getId();
+		name = dto.getName();
 	}
 
 	public Long getId() {
