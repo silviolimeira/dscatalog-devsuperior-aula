@@ -1,56 +1,35 @@
-package com.limeira.dscatalog.entities;
+package com.limeira.dscatalog.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import com.limeira.dscatalog.dto.ProductDTO;
+import com.limeira.dscatalog.entities.Category;
+import com.limeira.dscatalog.entities.Product;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "tb_product")
-public class Product implements Serializable {
+public class ProductDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
 	private String name;
-	
-	@Column(columnDefinition = "TEXT")
 	private String description;
-	
 	private Double price;
 	private String imgUrl;
-
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	
 	private Instant date;
 	
+	private List<CategoryDTO> categories = new ArrayList<>();
 	
-	@ManyToMany
-	@JoinTable(name = "tb_product_category",
-			joinColumns = @JoinColumn(name = "product_id"),
-			inverseJoinColumns = @JoinColumn(name = "category_id"))
-	Set<Category> categories = new HashSet<>();
-
-	public Product() {
-
+	public ProductDTO() {
+		
 	}
 
-	public Product(Long id, String name, String description, Double price, String imgUrl, Instant date) {
+	public ProductDTO(Long id, String name, String description, Double price, String imgUrl, Instant date) {
+		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -59,15 +38,20 @@ public class Product implements Serializable {
 		this.date = date;
 	}
 	
-	public Product(ProductDTO dto) {
-		id = dto.getId();
-		name = dto.getName();
-		description = dto.getDescription();
-		price = dto.getPrice();
-		imgUrl = dto.getImgUrl();
-		date = dto.getDate();
-	}	
+	public ProductDTO(Product entity) {
+		id = entity.getId();
+		name = entity.getName();
+		description = entity.getDescription();
+		price = entity.getPrice();
+		imgUrl = entity.getImgUrl();
+		date = entity.getDate();
+	}
 	
+	public ProductDTO(Product entity, Set<Category> categories) {
+		this(entity);
+		categories.forEach(cat -> this.categories.add(new CategoryDTO(cat)));
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -116,7 +100,7 @@ public class Product implements Serializable {
 		this.date = date;
 	}
 	
-	public Set<Category> getCategories() {
+	public List<CategoryDTO> getCategories() {
 		return categories;
 	}
 
@@ -133,16 +117,14 @@ public class Product implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Product other = (Product) obj;
+		ProductDTO other = (ProductDTO) obj;
 		return Objects.equals(id, other.id);
 	}
 
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", name=" + name + ", description=" + description + ", price=" + price
+		return "ProductDTO [id=" + id + ", name=" + name + ", description=" + description + ", price=" + price
 				+ ", imgUrl=" + imgUrl + ", date=" + date + ", categories=" + categories + "]";
 	}
-	
-	
 	
 }
