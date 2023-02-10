@@ -1,0 +1,3 @@
+
+Recursos para backend:
+https://github.com/devsuperior/dscatalog-resources/blob/master/backend/README.md
