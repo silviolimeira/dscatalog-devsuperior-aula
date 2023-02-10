@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.limeira.dscatalog.dto.ProductDTO;
 import com.limeira.dscatalog.services.ProductService;
+import com.limeira.dscatalog.services.exceptions.DatabaseException;
 import com.limeira.dscatalog.services.exceptions.ResourceNotFoundException;
 import com.limeira.dscatalog.tests.Factory;
 
@@ -42,12 +43,14 @@ public class ProductResourceTests {
 	
 	private Long existingId;
 	private Long nonExistingId;
+	private Long dependentId;
 
 	
 	@BeforeEach
 	void setUp() throws Exception {
 		existingId = 1L;
 		nonExistingId = 2L;
+		dependentId = 3L;
 		
 		productDTO = Factory.createProductDTO();
 		page = new PageImpl<>(List.of(productDTO));
@@ -59,6 +62,11 @@ public class ProductResourceTests {
 		
 		Mockito.when(service.update(ArgumentMatchers.eq(existingId), ArgumentMatchers.any())).thenReturn(productDTO);
 		Mockito.when(service.update(ArgumentMatchers.eq(nonExistingId), ArgumentMatchers.any())).thenThrow(ResourceNotFoundException.class);
+		
+		Mockito.doNothing().when(service).delete(existingId);
+		Mockito.doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
+		Mockito.doThrow(DatabaseException.class).when(service).delete(dependentId);
+		
 	}
 
 	
