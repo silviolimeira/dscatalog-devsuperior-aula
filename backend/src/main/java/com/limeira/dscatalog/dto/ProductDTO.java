@@ -10,16 +10,28 @@ import java.util.Set;
 import com.limeira.dscatalog.entities.Category;
 import com.limeira.dscatalog.entities.Product;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 public class ProductDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
+	
+	@Size(min = 5, max = 60, message = "Deve ter entre 5 e 60 caracteres")
+	@NotBlank(message = "Campo obrigatório")
 	private String name;
+	
 	private String description;
+	
+	@Positive(message = "Preço deve ser um valor possitivo")
 	private Double price;
 	private String imgUrl;
 	
+	@PastOrPresent(message = "A data do produto não pode ser uma data futura")
 	private Instant date;
 	
 	private List<CategoryDTO> categories = new ArrayList<>();
