@@ -10,7 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.limeira.dscatalog.services.exceptions.DatabaseException;
 import com.limeira.dscatalog.services.exceptions.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,33 +31,8 @@ public class ResourceExceptionHandler {
 		
 	}
 	
-	@ExceptionHandler(DatabaseException.class)
-	public ResponseEntity<StandardError> databaseException(DatabaseException e, HttpServletRequest request) {
-		HttpStatus status = HttpStatus.BAD_REQUEST;
-		StandardError err = new StandardError();
-		err.setTimestamp(Instant.now());
-		err.setStatus(status.value());
-		err.setError("Database exception");
-		err.setMessage(e.getMessage());
-		err.setPath(request.getRequestURI());
 
-		return ResponseEntity.status(status).body(err);
-	}
 	
-
-	@ExceptionHandler(DataIntegrityViolationException.class)
-	public ResponseEntity<StandardError> dataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
-		HttpStatus status = HttpStatus.BAD_REQUEST;
-		StandardError err = new StandardError();
-		err.setTimestamp(Instant.now());
-		err.setStatus(status.value());
-		err.setError("Database exception");
-		err.setMessage(e.getMessage());
-		err.setPath(request.getRequestURI());
-
-		return ResponseEntity.status(status).body(err);
-	}
-
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ValidationError> methodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
@@ -76,4 +50,21 @@ public class ResourceExceptionHandler {
 
 		return ResponseEntity.status(status).body(err);
 	}
+
+	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<StandardError> dataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
+		HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+		ValidationError err = new ValidationError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError("Database exception");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+
+		err.addError("email", "Email já existe");
+		
+		return ResponseEntity.status(status).body(err);
+	}
+	
 }

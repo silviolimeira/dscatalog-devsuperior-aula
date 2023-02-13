@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.limeira.dscatalog.dto.UserDTO;
 import com.limeira.dscatalog.dto.UserInsertDTO;
+import com.limeira.dscatalog.dto.UserUpdateDTO;
 import com.limeira.dscatalog.services.UserService;
 
 import jakarta.validation.Valid;
@@ -50,9 +51,9 @@ public class UserResource {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<UserDTO> update(@Valid @PathVariable Long id, @RequestBody UserDTO dto) {
-		dto = service.update(id, dto);
-		return ResponseEntity.ok().body(dto);
+	public ResponseEntity<UserDTO> update(@Valid @PathVariable Long id, @RequestBody UserUpdateDTO dto) {
+		UserDTO newUserDto = service.update(id, dto);
+		return ResponseEntity.ok().body(newUserDto);
 	}
 
 	@DeleteMapping(value = "/{id}")

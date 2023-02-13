@@ -4,11 +4,12 @@ import java.io.Serializable;
 
 import com.limeira.dscatalog.services.validation.UserInsertValid;
 
-@UserInsertValid // Annotation for validation email exists
-public class UserInsertDTO extends UserDTO implements Serializable {
+//Annotation for validation email exists
+@UserInsertValid 
+public class UserInsertDTO extends UserDTO {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	private String password;
 
 	public UserInsertDTO() {

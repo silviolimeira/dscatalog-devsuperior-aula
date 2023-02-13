@@ -14,13 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.limeira.dscatalog.dto.RoleDTO;
 import com.limeira.dscatalog.dto.UserDTO;
 import com.limeira.dscatalog.dto.UserInsertDTO;
+import com.limeira.dscatalog.dto.UserUpdateDTO;
 import com.limeira.dscatalog.entities.Role;
 import com.limeira.dscatalog.entities.User;
 import com.limeira.dscatalog.repositories.UserRepository;
 import com.limeira.dscatalog.services.exceptions.DatabaseException;
 import com.limeira.dscatalog.services.exceptions.ResourceNotFoundException;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class UserService {
@@ -54,14 +53,14 @@ public class UserService {
 	}
 
 	@Transactional
-	public UserDTO update(Long id, UserDTO dto) {
+	public UserDTO update(Long id, UserUpdateDTO dto) {
 		try {
 			User entity = repository.getReferenceById(id);
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
 			return new UserDTO(entity);
 		}
-		catch (EntityNotFoundException e) {
+		catch (Exception e) {
 			throw new ResourceNotFoundException("Id not found " + id);
 		}
 	}
