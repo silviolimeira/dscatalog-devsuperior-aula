@@ -5,18 +5,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
-//Define annotation for UserInsertValidator 
 @Constraint(validatedBy = UserUpdateValidator.class)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
+
 public @interface UserUpdateValid {
-	String message() default "Validation Error";
-	
+	String message() default "Validation error";
+
 	Class<?>[] groups() default {};
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
 }

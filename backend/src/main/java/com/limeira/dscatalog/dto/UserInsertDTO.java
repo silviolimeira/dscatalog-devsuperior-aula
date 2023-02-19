@@ -1,18 +1,14 @@
 package com.limeira.dscatalog.dto;
 
-import java.io.Serializable;
-
 import com.limeira.dscatalog.services.validation.UserInsertValid;
 
-//Annotation for validation email exists
-@UserInsertValid 
+@UserInsertValid
 public class UserInsertDTO extends UserDTO {
-
 	private static final long serialVersionUID = 1L;
-	
+
 	private String password;
 
-	public UserInsertDTO() {
+	UserInsertDTO() {
 		super();
 	}
 
@@ -23,5 +19,4 @@ public class UserInsertDTO extends UserDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 }

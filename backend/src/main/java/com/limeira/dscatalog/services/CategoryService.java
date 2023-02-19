@@ -2,6 +2,8 @@ package com.limeira.dscatalog.services;
 
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,8 +17,6 @@ import com.limeira.dscatalog.entities.Category;
 import com.limeira.dscatalog.repositories.CategoryRepository;
 import com.limeira.dscatalog.services.exceptions.DatabaseException;
 import com.limeira.dscatalog.services.exceptions.ResourceNotFoundException;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class CategoryService {
@@ -47,7 +47,7 @@ public class CategoryService {
 	@Transactional
 	public CategoryDTO update(Long id, CategoryDTO dto) {
 		try {
-			Category entity = repository.getReferenceById(id);
+			Category entity = repository.getOne(id);
 			entity.setName(dto.getName());
 			entity = repository.save(entity);
 			return new CategoryDTO(entity);

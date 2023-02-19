@@ -3,6 +3,9 @@ package com.limeira.dscatalog.services.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.limeira.dscatalog.dto.UserInsertDTO;
@@ -10,37 +13,30 @@ import com.limeira.dscatalog.entities.User;
 import com.limeira.dscatalog.repositories.UserRepository;
 import com.limeira.dscatalog.resources.exceptions.FieldMessage;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {
 
 	@Autowired
 	private UserRepository repository;
-	
+
 	@Override
-	public void initialize(UserInsertValid constraintAnnotation) {
-		ConstraintValidator.super.initialize(constraintAnnotation);
+	public void initialize(UserInsertValid ann) {
 	}
 
 	@Override
-	public boolean isValid(UserInsertDTO userIsertDTO, ConstraintValidatorContext context) {
+	public boolean isValid(UserInsertDTO dto, ConstraintValidatorContext context) {
 
 		List<FieldMessage> list = new ArrayList<>();
 
-		// Coloque aqui seus testes de validação, acrescentando objetos FieldMessage à Lista
-		User user = repository.findByEmail(userIsertDTO.getEmail());
+		User user = repository.findByEmail(dto.getEmail());
 		if (user != null) {
 			list.add(new FieldMessage("email", "Email já existe"));
 		}
 
-		for (FieldMessage fm : list) {
+		for (FieldMessage e : list) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate(fm.getMessage()).addPropertyNode(fm.getFieldName())
+			context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName())
 					.addConstraintViolation();
 		}
-
 		return list.isEmpty();
 	}
-
 }

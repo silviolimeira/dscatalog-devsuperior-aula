@@ -1,32 +1,28 @@
 package com.limeira.dscatalog.dto;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 
 import com.limeira.dscatalog.entities.Role;
-import com.limeira.dscatalog.entities.User;
 
 public class RoleDTO implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private String authority;
 
 	public RoleDTO() {
-
 	}
 
 	public RoleDTO(Long id, String authority) {
+		super();
 		this.id = id;
 		this.authority = authority;
 	}
 
-	public RoleDTO(Role entity) {
-		id = entity.getId();
-		authority = entity.getAuthority();
+	public RoleDTO(Role role) {
+		super();
+		id = role.getId();
+		authority = role.getAuthority();
 	}
 
 	public Long getId() {
@@ -44,27 +40,4 @@ public class RoleDTO implements Serializable {
 	public void setAuthority(String authority) {
 		this.authority = authority;
 	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RoleDTO other = (RoleDTO) obj;
-		return Objects.equals(id, other.id);
-	}
-
-	@Override
-	public String toString() {
-		return "RoleDTO [id=" + id + ", authority=" + authority + "]";
-	}
-
 }

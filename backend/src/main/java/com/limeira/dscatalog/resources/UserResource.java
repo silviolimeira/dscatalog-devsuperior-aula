@@ -2,10 +2,13 @@ package com.limeira.dscatalog.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,9 +22,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.limeira.dscatalog.dto.UserDTO;
 import com.limeira.dscatalog.dto.UserInsertDTO;
 import com.limeira.dscatalog.dto.UserUpdateDTO;
+import com.limeira.dscatalog.entities.User;
+import com.limeira.dscatalog.services.AuthService;
 import com.limeira.dscatalog.services.UserService;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -29,8 +32,10 @@ public class UserResource {
 
 	@Autowired
 	private UserService service;
+	
+	@Autowired
+	private AuthService authService;
 
-	// GET example {{host}}/products?page=1&size=5&sort=name,asc
 	@GetMapping
 	public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable) {
 		Page<UserDTO> list = service.findAllPaged(pageable);
@@ -44,22 +49,30 @@ public class UserResource {
 	}
 
 	@PostMapping
-	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO dto) {
+	public ResponseEntity<UserDTO> insert(@RequestBody @Valid UserInsertDTO dto) {
 		UserDTO newDto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newDto.getId()).toUri();
 		return ResponseEntity.created(uri).body(newDto);
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<UserDTO> update(@Valid @PathVariable Long id, @RequestBody UserUpdateDTO dto) {
-		UserDTO newUserDto = service.update(id, dto);
-		return ResponseEntity.ok().body(newUserDto);
+	public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody @Valid UserUpdateDTO dto) {
+		UserDTO newDto = service.update(id, dto);
+		return ResponseEntity.ok().body(newDto);
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<UserDTO> delete(@PathVariable Long id) {
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-
+	
+	@PreAuthorize("hasAnyRole('OPERATOR')")
+	@GetMapping(value = "/profile")
+	public ResponseEntity<UserDTO> getProfile() {
+		User user = authService.authenticated();
+		UserDTO dto = service.findById(user.getId());
+		return ResponseEntity.ok().body(dto);
+	}
+	
 }
