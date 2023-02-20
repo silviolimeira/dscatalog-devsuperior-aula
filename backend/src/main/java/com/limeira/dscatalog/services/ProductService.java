@@ -1,17 +1,5 @@
 package com.limeira.dscatalog.services;
 
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.limeira.dscatalog.dto.CategoryDTO;
 import com.limeira.dscatalog.dto.ProductDTO;
 import com.limeira.dscatalog.entities.Category;
@@ -20,6 +8,18 @@ import com.limeira.dscatalog.repositories.CategoryRepository;
 import com.limeira.dscatalog.repositories.ProductRepository;
 import com.limeira.dscatalog.services.exceptions.DatabaseException;
 import com.limeira.dscatalog.services.exceptions.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -31,8 +31,9 @@ public class ProductService {
 	private CategoryRepository categoryRepository;
 	
 	@Transactional(readOnly = true)
-	public Page<ProductDTO> findAllPaged(Pageable pageagle) {
-		Page<Product> list = repository.findAll(pageagle);
+	public Page<ProductDTO> findAllPaged(Long categoryId, String name, Pageable pageable) {
+		List<Category> categories = (categoryId == 0) ? null : Arrays.asList(categoryRepository.getOne(categoryId));
+		Page<Product> list = repository.find(categories, name, pageable);
 		return list.map(x -> new ProductDTO(x));
 	}
 

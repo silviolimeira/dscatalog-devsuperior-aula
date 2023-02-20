@@ -1,10 +1,11 @@
 package com.limeira.dscatalog.services;
 
-import static org.mockito.Mockito.mockitoSession;
-
-import java.util.List;
-import java.util.Optional;
-
+import com.limeira.dscatalog.dto.ProductDTO;
+import com.limeira.dscatalog.entities.Product;
+import com.limeira.dscatalog.repositories.ProductRepository;
+import com.limeira.dscatalog.services.exceptions.DatabaseException;
+import com.limeira.dscatalog.services.exceptions.ResourceNotFoundException;
+import com.limeira.dscatalog.tests.Factory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,12 +22,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.limeira.dscatalog.dto.ProductDTO;
-import com.limeira.dscatalog.entities.Product;
-import com.limeira.dscatalog.repositories.ProductRepository;
-import com.limeira.dscatalog.services.exceptions.DatabaseException;
-import com.limeira.dscatalog.services.exceptions.ResourceNotFoundException;
-import com.limeira.dscatalog.tests.Factory;
+import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 public class ProductServiceTests {
@@ -51,7 +48,7 @@ public class ProductServiceTests {
 	private long existingId;
 	private long nonExistingId;
 	private long dependentId;
-	private PageImpl<Product> page;
+	private Page<Product> page;
 	private Product product;
 	
 	@BeforeEach
@@ -112,7 +109,7 @@ public class ProductServiceTests {
 	@Test
 	public void findAllPagedShouldReturnPage() {
 		Pageable pageable = PageRequest.of(0, 10);
-		Page<ProductDTO> result = service.findAllPaged(pageable);
+		Page<ProductDTO> result = service.findAllPaged(null, null, pageable);
 		
 		Assertions.assertNotNull(result);
 		Mockito.verify(repository, Mockito.times(1)).findAll(pageable);

@@ -51,18 +51,18 @@ public class ProductResourceTests {
 		existingId = 1L;
 		nonExistingId = 2L;
 		dependentId = 3L;
-		
+
 		productDTO = Factory.createProductDTO();
 		page = new PageImpl<>(List.of(productDTO));
 
-		Mockito.when(service.findAllPaged(ArgumentMatchers.any())).thenReturn(page);
+		Mockito.when(service.findAllPaged(null, null, ArgumentMatchers.any())).thenReturn(page);
 
 		Mockito.when(service.findById(existingId)).thenReturn(productDTO);
 		Mockito.when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
-		
+
 		Mockito.when(service.update(ArgumentMatchers.eq(existingId), ArgumentMatchers.any())).thenReturn(productDTO);
 		Mockito.when(service.update(ArgumentMatchers.eq(nonExistingId), ArgumentMatchers.any())).thenThrow(ResourceNotFoundException.class);
-		
+
 		Mockito.doNothing().when(service).delete(existingId);
 		Mockito.doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
 		Mockito.doThrow(DatabaseException.class).when(service).delete(dependentId);
